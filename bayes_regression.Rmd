@@ -4,7 +4,7 @@ title: A Bayesic regression analysis
 date: Test
 output:
   pdf_document:
-    template: mhl.tex
+    template: ~/links/defaults/rmd/mhl.tex
 ---
 
 # A classical (frequentist) approach
