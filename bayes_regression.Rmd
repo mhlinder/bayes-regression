@@ -1,0 +1,91 @@
+---
+author: Henry Linder
+title: A Bayesic regression analysis
+date: Test
+output:
+  pdf_document:
+    template: mhl.tex
+---
+
+# A classical (frequentist) approach
+
+Consider a simple linear regression of tree height $y_i$ on age $x_i$
+
+\begin{gather}
+y_i = \beta_0 + \beta_1 x_i + \epsilon_i
+\end{gather}
+
+where $\epsilon_i$ are independent $N(0,\sigma^2)$ errors. For how it
+will pertain to the Bayesian analysis, note two things: first, we can
+equivalently write
+
+\begin{equation}
+y_i \sim N(\beta_0 + \beta_1 x_i, \sigma^2)
+\end{equation}
+
+and second, this implies that the likelihood function for the data
+$\mathbf{y}=(y_1,\dots,y_n)'$ is $f(\mathbf{y}|\theta, \mathbf{x})$
+where the data $\mathbf{x}=(x_1,\dots,x_n)'$ is assumed known and the
+parameter vector is $\theta = (\beta_0, \beta_1)'$.
+
+A regression fit is given by
+
+```{r}
+
+m <- lm(height ~ age, data = Loblolly)
+summary(m)
+
+```
+
+Note, in particular, that the regression coefficient $\beta_1$ is
+highly significant, the $R^2$ is high, and a QQ plot indicates the
+residuals are approximately normal:
+
+```{r echo = FALSE, fig.width = 4, fig.height = 4, fig.align='center'}
+
+qqnorm(residuals(m), main = "")
+qqline(residuals(m))
+
+```
+
+# A Bayesian approach
+
+A conventional, convenient, and conjugate choice in Bayesian
+regression gives independent normal priors to $\beta_0$ and
+$\beta_1$. For simplicity, let $\beta_0 \sim N(0, 1)$ and $\beta_1
+\sim N(0, 1)$. A Bayesian analysis revolves around the fundamental
+relationship between the prior distribution $p(\theta)$ and the
+posterior distribution $p(\theta|\mathbf{y})$ of the
+parameter vector $\theta = (\beta_0, \beta_1)'$:
+
+\begin{gather}
+p(\theta|\mathbf{y}) \propto f(\mathbf{y}|\theta,
+\mathbf{x})p(\theta)
+\end{gather}
+
+where $f(\mathbf{y}|\theta, \mathbf{x})$ is the likelihood of the
+observed data, and we take $\mathbf{x}$ as given.
+
+In the present case, we can write the likelihood as
+
+\begin{gather}
+f(\mathbf{y}|\theta,\mathbf{x}) = \prod_{i=1}^n f(y_i|\theta,x_i)
+\propto \exp
+\left[ -\frac{1}{2\sigma^2} \sum_{i=1}^n (y_i - \beta_0 - \beta_1 x_i)^2 \right]
+\end{gather}
+
+where we omit the constant of proportionality for clarity.
+
+Too, the prior for $\theta$ is
+
+\begin{equation}
+p(\theta) = p(\beta_0) p(\beta_1) \propto
+\exp \left[ -\frac{1}{2} \left( \beta_0^2 + \beta_1^2 \right) \right]
+\end{equation}
+
+So, we can find the posterior distribution as
+
+\begin{gather}
+p(\theta|\mathbf{y}) \propto p(\beta_0|\mathbf{y}) p(\beta_1|\mathbf{y})
+\end{gather}
+
